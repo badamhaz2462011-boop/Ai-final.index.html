@@ -1,114 +1,194 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>STOP STORE | V2</title>
+    <title>STOP SYSTEM | ULTIMATE EDITION</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --p: #6366f1; --bg: #000; --card: #0d0d0d; }
-        body { background: var(--bg); color: white; font-family: 'Cairo', sans-serif; margin: 0; overflow-x: hidden; width: 100%; }
+        :root { --p: #6366f1; --bg: #000; --card: #0a0a0a; }
+        body { background: var(--bg); color: #fff; font-family: 'Cairo', sans-serif; margin: 0; overflow-x: hidden; }
         .h-font { font-family: 'Orbitron', sans-serif; }
-
+        
+        /* 1. توسيع النافبار ومنع التداخل */
         nav { 
-            position: fixed; top: 0; width: 100%; z-index: 1000; 
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); 
-            border-bottom: 1px solid #111; padding: 15px 10px; 
+            position: fixed; top: 0; width: 100%; z-index: 2000; 
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); 
+            border-bottom: 1px solid #1a1a1a; 
+            padding: 25px 40px; /* زيادة التوسيع */
             display: flex; align-items: center; justify-content: space-between; 
         }
-        .nav-links { display: flex; gap: 15px; margin-right: 10px; }
-        .nav-link { font-size: 10px; color: #444; cursor: pointer; font-weight: 900; letter-spacing: 1px; }
-        .nav-link.active { color: #fff; text-shadow: 0 0 10px var(--p); }
+        .nav-links { display: flex; gap: 30px; align-items: center; } /* مسافة أكبر بين الروابط */
+        .nav-link { font-size: 11px; color: #444; cursor: pointer; font-weight: 900; letter-spacing: 2px; transition: 0.4s; }
+        .nav-link.active { color: var(--p); text-shadow: 0 0 15px var(--p); }
 
-        .admin-box { 
-            background: var(--card); border-radius: 30px; padding: 25px; 
-            width: 92%; max-width: 380px; margin: 20px auto; border: 1px solid #1a1a1a; box-sizing: border-box; 
-        }
+        /* 2. تظبيط التيكست بوكس ومنع خروج الكلام */
+        .main-container { padding: 130px 25px 60px 25px; max-width: 1400px; margin: 0 auto; }
         .luxury-input { 
-            width: 100%; background: #050505; border: 1px solid #151515; 
-            height: 50px; border-radius: 15px; padding: 0 15px; color: white; 
-            margin-bottom: 12px; outline: none; font-size: 13px; font-weight: 700; display: block; box-sizing: border-box;
+            width: 100%; background: #050505; border: 1px solid #1a1a1a; 
+            height: 65px; border-radius: 20px; 
+            padding: 0 25px; /* مسافة داخلية لمنع خروج النص */
+            color: #fff; margin-bottom: 25px; outline: none; 
+            font-size: 15px; transition: 0.3s;
+            box-sizing: border-box; /* يضمن إن الـ Padding ميكبرش الصندوق */
         }
+        .luxury-input:focus { border-color: var(--p); box-shadow: 0 0 25px rgba(99, 102, 241, 0.15); }
 
-        /* زر الرفع الجديد */
-        .upload-btn {
-            display: block; width: 100%; height: 50px; border: 1px dashed #333;
-            border-radius: 15px; line-height: 50px; text-align: center;
-            font-size: 11px; color: #777; cursor: pointer; margin-bottom: 12px;
-            background: #080808; transition: 0.3s;
+        /* 3. تحسين شكل زرار الـ Upload */
+        .upload-zone {
+            width: 100%; height: 80px; border: 2px dashed #1a1a1a; 
+            border-radius: 22px; display: flex; align-items: center; 
+            justify-content: center; gap: 15px; cursor: pointer;
+            color: #555; font-size: 11px; font-weight: 900; 
+            transition: 0.4s; margin-bottom: 25px;
+            background: rgba(255,255,255,0.02);
         }
-        .upload-btn:hover { border-color: var(--p); color: white; }
+        .upload-zone:hover { 
+            border-color: var(--p); color: #fff; 
+            background: rgba(99, 102, 241, 0.05); 
+            transform: translateY(-2px);
+        }
+        .upload-icon { color: var(--p); filter: drop-shadow(0 0 8px var(--p)); }
 
-        section { display: none; padding-top: 90px; min-height: 100vh; }
-        section.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* تظبيط الكروت والمساحات */
+        .glass-panel { background: var(--card); border: 1px solid #161616; border-radius: 35px; padding: 40px; margin-bottom: 30px; }
+        .btn-master { 
+            background: var(--p); color: #fff; height: 65px; width: 100%; 
+            border-radius: 22px; font-weight: 900; font-family: 'Orbitron'; 
+            font-size: 13px; letter-spacing: 2px; transition: 0.5s;
+        }
+        .btn-master:hover { transform: scale(1.02); box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4); }
+
+        .product-grid { display: grid; grid-template-cols: repeat(auto-fill, minmax(320px, 1fr)); gap: 35px; margin-top: 50px; }
+        .product-card { background: #080808; border: 1px solid #111; border-radius: 40px; padding: 35px; transition: 0.4s; position: relative; }
+        .product-img { height: 240px; width: 100%; object-fit: contain; margin-bottom: 30px; }
+
+        section { display: none; }
+        section.active { display: block; animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* رسالة لا يوجد منتجات */
+        .empty-state { 
+            grid-column: 1 / -1; padding: 100px 0; text-align: center;
+            border: 1px dashed #1a1a1a; border-radius: 40px;
+        }
     </style>
 </head>
-<body onload="renderItems()">
+<body onload="initApp()">
+
     <nav>
-        <div class="logo h-font text-lg font-black italic">.STOP</div>
+        <div class="logo h-font text-2xl font-black italic tracking-tighter">STOP<span class="text-indigo-600">.OS</span></div>
         <div class="nav-links h-font">
-            <span onclick="tab('home')" id="l-home" class="nav-link active">HOME</span>
-            <span onclick="tab('shop')" id="l-shop" class="nav-link">SHOP</span>
-            <span onclick="tab('dash')" id="l-dash" class="nav-link">ADMIN</span>
+            <span onclick="tab('home')" id="l-home" class="nav-link active">DASHBOARD</span>
+            <span onclick="tab('shop')" id="l-shop" class="nav-link">MARKETPLACE</span>
+            <span onclick="tab('dash')" id="l-dash" class="nav-link">TERMINAL</span>
         </div>
     </nav>
 
-    <main>
-        <section id="home" class="active text-center">
-            <div class="mt-20 px-4">
-                <h1 class="h-font text-5xl font-black italic leading-tight">PURE<br><span style="color:var(--p)">STUFF.</span></h1>
-                <button onclick="tab('shop')" class="bg-indigo-600 w-48 h-12 rounded-xl mt-10 h-font font-bold text-sm">EXPLORE SHOP</button>
+    <main class="main-container">
+        
+        <section id="home" class="active">
+            <div class="flex flex-col items-center justify-center text-center py-20">
+                <div class="text-indigo-500 text-[10px] font-black h-font mb-6 tracking-[8px] opacity-60">SYSTEM STATUS: OPTIMIZED</div>
+                <h1 class="h-font text-[90px] font-black italic leading-[0.8] mb-10">THE<br><span class="text-indigo-600">HUB.</span></h1>
+                <p class="text-zinc-600 max-w-md text-base leading-relaxed mb-12">نظام إدارة مبيعات متكامل بجودة عالمية وتجربة مستخدم لا تضاهى.</p>
+                <div class="flex gap-6">
+                    <button onclick="tab('shop')" class="btn-master px-16 rounded-full">Enter Marketplace</button>
+                </div>
             </div>
         </section>
 
         <section id="shop">
-            <div id="shop-grid" class="grid grid-cols-1 gap-5 p-5"></div>
+            <div class="mb-16">
+                <h2 class="h-font text-4xl font-black italic uppercase tracking-tighter">Marketplace</h2>
+                <div class="w-20 h-1.5 bg-indigo-600 mt-4 rounded-full"></div>
+            </div>
+            <div id="shop-grid" class="product-grid"></div>
         </section>
 
         <section id="checkout">
-            <div class="admin-box">
-                <h2 class="h-font text-center text-lg mb-6 italic">CHECKOUT</h2>
-                <div id="order-summary" class="mb-6 p-4 bg-zinc-950 rounded-xl border border-zinc-900"></div>
-                <input type="text" placeholder="اسمك الكامل" class="luxury-input">
-                <input type="text" placeholder="عنوان التوصيل" class="luxury-input">
-                <input type="tel" placeholder="رقم الهاتف" class="luxury-input">
-                <button onclick="confirmOrder()" class="bg-indigo-600 w-full h-12 rounded-xl h-font font-bold mt-4">إتمام الشراء</button>
-                <button onclick="tab('shop')" class="w-full text-zinc-500 text-[10px] mt-4">إلغاء</button>
+            <div class="max-w-2xl mx-auto glass-panel">
+                <h2 class="h-font text-2xl font-black italic text-center mb-12 uppercase tracking-widest">Secure Order</h2>
+                <div id="checkout-box" class="bg-black p-8 rounded-3xl border border-zinc-900 mb-10"></div>
+                <div class="space-y-2">
+                    <input type="text" id="c-name" placeholder="YOUR FULL NAME" class="luxury-input h-font">
+                    <input type="tel" id="c-phone" placeholder="MOBILE NUMBER" class="luxury-input h-font">
+                    <input type="text" id="c-addr" placeholder="SHIPPING ADDRESS" class="luxury-input h-font">
+                </div>
+                <button onclick="finishOrder()" class="btn-master mt-8">SUBMIT TRANSACTION</button>
             </div>
         </section>
 
         <section id="dash">
-            <div class="admin-box text-center">
-                <h2 class="h-font text-sm mb-6 text-zinc-500 italic uppercase">Dashboard Access</h2>
-                <input type="password" id="pass" placeholder="Password" class="luxury-input text-center h-font">
-                <button onclick="unlock()" class="bg-indigo-600 w-full h-12 rounded-xl h-font font-bold text-sm">UNLOCK</button>
+            <div class="max-w-md mx-auto glass-panel text-center py-16">
+                <h2 class="h-font text-2xl font-black mb-10 tracking-widest uppercase">Encryption Key</h2>
+                <input type="password" id="pass" placeholder="••••" class="luxury-input text-center text-3xl tracking-[15px]">
+                <button onclick="unlock()" class="btn-master">ACCESS SYSTEM</button>
             </div>
         </section>
 
-        <section id="add-page">
-            <div class="admin-box">
-                <h2 class="text-lg font-black mb-6 text-center uppercase">Add Product</h2>
-                <input type="text" id="p-name" placeholder="Product Name" class="luxury-input">
-                <input type="number" id="p-price" placeholder="Price ($)" class="luxury-input">
-                
-                <label for="file-up" id="file-label" class="upload-btn">Upload Image From Device</label>
-                <input type="file" id="file-up" class="hidden" accept="image/*">
-                
-                <div class="text-center text-[10px] text-zinc-600 mb-3 uppercase">-- OR --</div>
-                
-                <input type="text" id="p-url" placeholder="Paste Image URL" class="luxury-input">
-                
-                <button onclick="saveItem()" class="bg-indigo-600 w-full h-12 rounded-xl h-font font-bold text-sm">PUBLISH</button>
-                <button onclick="clearAll()" class="text-red-900 text-[9px] w-full mt-8 uppercase font-bold">Clear All Data</button>
+        <section id="admin">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="glass-panel text-center !mb-0">
+                    <div class="h-font text-[10px] text-zinc-600 mb-2">REVENUE</div>
+                    <div id="st-rev" class="h-font text-3xl font-black text-indigo-500">$0.00</div>
+                </div>
+                <div class="glass-panel text-center !mb-0">
+                    <div class="h-font text-[10px] text-zinc-600 mb-2">ORDERS</div>
+                    <div id="st-sales" class="h-font text-3xl font-black text-white">0</div>
+                </div>
+                <div class="glass-panel text-center !mb-0">
+                    <div class="h-font text-[10px] text-zinc-600 mb-2">ASSETS</div>
+                    <div id="st-items" class="h-font text-3xl font-black text-white">0</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="glass-panel">
+                    <h3 class="h-font text-xs text-zinc-500 mb-10 uppercase tracking-[4px]">New Inventory Injection</h3>
+                    <input type="text" id="p-name" placeholder="ASSET NAME" class="luxury-input h-font">
+                    <input type="number" id="p-price" placeholder="VALUE ($)" class="luxury-input h-font">
+                    
+                    <label for="p-file" id="up-label" class="upload-zone">
+                        <svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                        <span class="h-font">SELECT DEVICE MEDIA</span>
+                    </label>
+                    <input type="file" id="p-file" class="hidden" accept="image/*">
+                    
+                    <input type="text" id="p-url" placeholder="EXTERNAL URL (OPTIONAL)" class="luxury-input h-font">
+                    <button onclick="addProd()" class="btn-master">Deploy to Cloud</button>
+                </div>
+
+                <div class="glass-panel">
+                    <h3 class="h-font text-xs text-zinc-500 mb-10 uppercase tracking-[4px]">Live Performance</h3>
+                    <canvas id="liveChart" height="250"></canvas>
+                </div>
+            </div>
+            
+            <div class="glass-panel mt-10 overflow-x-auto">
+                <table class="w-full text-right h-font text-[11px]">
+                    <thead class="text-zinc-700">
+                        <tr><th class="pb-6">ID</th><th class="pb-6">CLIENT</th><th class="pb-6">PRODUCT</th><th class="pb-6">PRICE</th></tr>
+                    </thead>
+                    <tbody id="sales-log"></tbody>
+                </table>
             </div>
         </section>
     </main>
 
     <script>
-        let uploadedImg = "";
+        let db = { items: [], sales: [] };
+        let imgData = "";
+        let target = null;
+        let chart = null;
+
+        function initApp() {
+            const data = localStorage.getItem('stop_v3_final');
+            if(data) db = JSON.parse(data);
+            renderItems();
+        }
 
         function tab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
@@ -119,78 +199,128 @@
         }
 
         function unlock() {
-            if(document.getElementById('pass').value === '44556799') tab('add-page');
-            else alert('Wrong Password');
+            if(document.getElementById('pass').value === '44556799') {
+                tab('admin');
+                updateAdmin();
+                initChart();
+            } else alert('ACCESS DENIED');
         }
 
-        // تحويل الصورة المرفوعة لكود نصي
-        document.getElementById('file-up').onchange = function(e) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                uploadedImg = reader.result;
-                document.getElementById('file-label').innerText = "Image Loaded ✅";
-                document.getElementById('file-label').style.borderColor = "#6366f1";
-            }
-            reader.readAsDataURL(e.target.files[0]);
-        }
-
-        function saveItem() {
+        function addProd() {
             const n = document.getElementById('p-name').value;
             const p = document.getElementById('p-price').value;
-            const url = document.getElementById('p-url').value;
-            const finalImg = uploadedImg || url;
+            const u = document.getElementById('p-url').value;
+            const img = imgData || u;
 
-            if(!n || !p || !finalImg) return alert('Please complete all fields');
+            if(!n || !p || !img) return alert('Protocol Error: All fields required');
 
-            const db = JSON.parse(localStorage.getItem('stop_db')) || [];
-            db.push({name:n, price:p, img:finalImg});
-            localStorage.setItem('stop_db', JSON.stringify(db));
-            
-            alert('Added Successfully!');
-            uploadedImg = ""; // تصفير الصورة
-            document.getElementById('file-label').innerText = "Upload Image From Device";
-            renderItems(); tab('shop');
+            db.items.push({ id: Date.now(), n, p, img });
+            save();
+            location.reload();
         }
 
-        function buy(name, price) {
-            document.getElementById('order-summary').innerHTML = `
-                <div class="flex justify-between items-center">
-                    <span class="h-font text-xs uppercase">${name}</span>
-                    <span class="text-indigo-500 font-black h-font">$${price}</span>
+        function checkout(id) {
+            const item = db.items.find(i => i.id === id);
+            target = item;
+            document.getElementById('checkout-box').innerHTML = `
+                <div class="flex items-center justify-between h-font">
+                    <span class="text-zinc-600 text-[10px]">OBJECT:</span>
+                    <span class="text-white font-black">${item.n}</span>
+                </div>
+                <div class="flex items-center justify-between h-font mt-4">
+                    <span class="text-zinc-600 text-[10px]">TOTAL:</span>
+                    <span class="text-indigo-500 text-3xl font-black">$${item.p}</span>
                 </div>
             `;
             tab('checkout');
         }
 
-        function confirmOrder() {
-            alert('تم إرسال طلبك للمدير!');
-            tab('home');
-        }
+        function finishOrder() {
+            const c = document.getElementById('c-name').value;
+            if(!c) return alert('Identification Required');
 
-        function clearAll() {
-            if(confirm('سيتم مسح كل المنتجات، هل أنت متأكد؟')) {
-                localStorage.removeItem('stop_db');
-                renderItems();
-            }
+            db.sales.push({ 
+                id: 'TXN-' + Math.floor(Math.random()*10000), 
+                client: c, 
+                prod: target.n, 
+                price: parseFloat(target.p) 
+            });
+            save();
+            alert('TRANSACTION LOGGED');
+            tab('home');
         }
 
         function renderItems() {
             const grid = document.getElementById('shop-grid');
-            const items = JSON.parse(localStorage.getItem('stop_db')) || [];
-            if (items.length === 0) {
-                grid.innerHTML = '<p class="text-center text-zinc-700 w-full mt-20 h-font text-[10px]">No Products Found.</p>';
+            if(db.items.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="h-font text-zinc-800 text-xl font-black tracking-[10px]">NO PRODUCTS AVAILABLE NOW</div>
+                    </div>
+                `;
                 return;
             }
-            grid.innerHTML = items.map(p => `
-                <div class="bg-[#0d0d0d] p-5 rounded-[30px] border border-[#111]">
-                    <img src="${p.img}" class="h-40 mx-auto object-contain mb-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="h-font text-[11px] font-bold uppercase italic">${p.name}</h3>
-                        <span class="text-indigo-500 font-black h-font">$${p.price}</span>
+            grid.innerHTML = db.items.map(i => `
+                <div class="product-card">
+                    <img src="${i.img}" class="product-img">
+                    <div class="h-font text-xs text-zinc-500 font-bold mb-6">${i.n}</div>
+                    <div class="flex items-center justify-between">
+                        <span class="h-font text-2xl font-black text-indigo-500">$${i.p}</span>
+                        <button onclick="checkout(${i.id})" class="bg-white text-black px-8 py-3 rounded-xl h-font text-[10px] font-black uppercase hover:bg-indigo-600 hover:text-white transition">Acquire</button>
                     </div>
-                    <button onclick="buy('${p.name}', '${p.price}')" class="w-full h-11 bg-white text-black rounded-xl mt-4 text-[10px] font-black uppercase">BUY NOW</button>
                 </div>
             `).join('');
+        }
+
+        function updateAdmin() {
+            const rev = db.sales.reduce((a, b) => a + b.price, 0);
+            document.getElementById('st-rev').innerText = '$' + rev.toLocaleString();
+            document.getElementById('st-sales').innerText = db.sales.length;
+            document.getElementById('st-items').innerText = db.items.length;
+            
+            document.getElementById('sales-log').innerHTML = db.sales.slice().reverse().map(s => `
+                <tr class="border-b border-zinc-900"><td class="py-4 text-indigo-500">${s.id}</td><td>${s.client}</td><td>${s.prod}</td><td class="font-black">$${s.price}</td></tr>
+            `).join('');
+        }
+
+        function save() { localStorage.setItem('stop_v3_final', JSON.stringify(db)); }
+
+        document.getElementById('p-file').onchange = (e) => {
+            const r = new FileReader();
+            r.onload = () => {
+                imgData = r.result;
+                document.getElementById('up-label').innerHTML = "READY ✅";
+                document.getElementById('up-label').style.borderColor = "#6366f1";
+            };
+            r.readAsDataURL(e.target.files[0]);
+        };
+
+        function initChart() {
+            const ctx = document.getElementById('liveChart').getContext('2d');
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: db.sales.map((_, i) => 'T' + i),
+                    datasets: [{
+                        label: 'Profit',
+                        data: db.sales.map(s => s.price),
+                        borderColor: '#6366f1',
+                        borderWidth: 3,
+                        fill: true,
+                        backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: '#111' } }
+                    }
+                }
+            });
         }
     </script>
 </body>
