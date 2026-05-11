@@ -1,1 +1,197 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>STOP STORE | V2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #6366f1; --bg: #000; --card: #0d0d0d; }
+        body { background: var(--bg); color: white; font-family: 'Cairo', sans-serif; margin: 0; overflow-x: hidden; width: 100%; }
+        .h-font { font-family: 'Orbitron', sans-serif; }
+
+        nav { 
+            position: fixed; top: 0; width: 100%; z-index: 1000; 
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); 
+            border-bottom: 1px solid #111; padding: 15px 10px; 
+            display: flex; align-items: center; justify-content: space-between; 
+        }
+        .nav-links { display: flex; gap: 15px; margin-right: 10px; }
+        .nav-link { font-size: 10px; color: #444; cursor: pointer; font-weight: 900; letter-spacing: 1px; }
+        .nav-link.active { color: #fff; text-shadow: 0 0 10px var(--p); }
+
+        .admin-box { 
+            background: var(--card); border-radius: 30px; padding: 25px; 
+            width: 92%; max-width: 380px; margin: 20px auto; border: 1px solid #1a1a1a; box-sizing: border-box; 
+        }
+        .luxury-input { 
+            width: 100%; background: #050505; border: 1px solid #151515; 
+            height: 50px; border-radius: 15px; padding: 0 15px; color: white; 
+            margin-bottom: 12px; outline: none; font-size: 13px; font-weight: 700; display: block; box-sizing: border-box;
+        }
+
+        /* زر الرفع الجديد */
+        .upload-btn {
+            display: block; width: 100%; height: 50px; border: 1px dashed #333;
+            border-radius: 15px; line-height: 50px; text-align: center;
+            font-size: 11px; color: #777; cursor: pointer; margin-bottom: 12px;
+            background: #080808; transition: 0.3s;
+        }
+        .upload-btn:hover { border-color: var(--p); color: white; }
+
+        section { display: none; padding-top: 90px; min-height: 100vh; }
+        section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body onload="renderItems()">
+    <nav>
+        <div class="logo h-font text-lg font-black italic">.STOP</div>
+        <div class="nav-links h-font">
+            <span onclick="tab('home')" id="l-home" class="nav-link active">HOME</span>
+            <span onclick="tab('shop')" id="l-shop" class="nav-link">SHOP</span>
+            <span onclick="tab('dash')" id="l-dash" class="nav-link">ADMIN</span>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="active text-center">
+            <div class="mt-20 px-4">
+                <h1 class="h-font text-5xl font-black italic leading-tight">PURE<br><span style="color:var(--p)">STUFF.</span></h1>
+                <button onclick="tab('shop')" class="bg-indigo-600 w-48 h-12 rounded-xl mt-10 h-font font-bold text-sm">EXPLORE SHOP</button>
+            </div>
+        </section>
+
+        <section id="shop">
+            <div id="shop-grid" class="grid grid-cols-1 gap-5 p-5"></div>
+        </section>
+
+        <section id="checkout">
+            <div class="admin-box">
+                <h2 class="h-font text-center text-lg mb-6 italic">CHECKOUT</h2>
+                <div id="order-summary" class="mb-6 p-4 bg-zinc-950 rounded-xl border border-zinc-900"></div>
+                <input type="text" placeholder="اسمك الكامل" class="luxury-input">
+                <input type="text" placeholder="عنوان التوصيل" class="luxury-input">
+                <input type="tel" placeholder="رقم الهاتف" class="luxury-input">
+                <button onclick="confirmOrder()" class="bg-indigo-600 w-full h-12 rounded-xl h-font font-bold mt-4">إتمام الشراء</button>
+                <button onclick="tab('shop')" class="w-full text-zinc-500 text-[10px] mt-4">إلغاء</button>
+            </div>
+        </section>
+
+        <section id="dash">
+            <div class="admin-box text-center">
+                <h2 class="h-font text-sm mb-6 text-zinc-500 italic uppercase">Dashboard Access</h2>
+                <input type="password" id="pass" placeholder="Password" class="luxury-input text-center h-font">
+                <button onclick="unlock()" class="bg-indigo-600 w-full h-12 rounded-xl h-font font-bold text-sm">UNLOCK</button>
+            </div>
+        </section>
+
+        <section id="add-page">
+            <div class="admin-box">
+                <h2 class="text-lg font-black mb-6 text-center uppercase">Add Product</h2>
+                <input type="text" id="p-name" placeholder="Product Name" class="luxury-input">
+                <input type="number" id="p-price" placeholder="Price ($)" class="luxury-input">
+                
+                <label for="file-up" id="file-label" class="upload-btn">Upload Image From Device</label>
+                <input type="file" id="file-up" class="hidden" accept="image/*">
+                
+                <div class="text-center text-[10px] text-zinc-600 mb-3 uppercase">-- OR --</div>
+                
+                <input type="text" id="p-url" placeholder="Paste Image URL" class="luxury-input">
+                
+                <button onclick="saveItem()" class="bg-indigo-600 w-full h-12 rounded-xl h-font font-bold text-sm">PUBLISH</button>
+                <button onclick="clearAll()" class="text-red-900 text-[9px] w-full mt-8 uppercase font-bold">Clear All Data</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let uploadedImg = "";
+
+        function tab(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(document.getElementById('l-'+id)) document.getElementById('l-'+id).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function unlock() {
+            if(document.getElementById('pass').value === '44556799') tab('add-page');
+            else alert('Wrong Password');
+        }
+
+        // تحويل الصورة المرفوعة لكود نصي
+        document.getElementById('file-up').onchange = function(e) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                uploadedImg = reader.result;
+                document.getElementById('file-label').innerText = "Image Loaded ✅";
+                document.getElementById('file-label').style.borderColor = "#6366f1";
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+        function saveItem() {
+            const n = document.getElementById('p-name').value;
+            const p = document.getElementById('p-price').value;
+            const url = document.getElementById('p-url').value;
+            const finalImg = uploadedImg || url;
+
+            if(!n || !p || !finalImg) return alert('Please complete all fields');
+
+            const db = JSON.parse(localStorage.getItem('stop_db')) || [];
+            db.push({name:n, price:p, img:finalImg});
+            localStorage.setItem('stop_db', JSON.stringify(db));
+            
+            alert('Added Successfully!');
+            uploadedImg = ""; // تصفير الصورة
+            document.getElementById('file-label').innerText = "Upload Image From Device";
+            renderItems(); tab('shop');
+        }
+
+        function buy(name, price) {
+            document.getElementById('order-summary').innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="h-font text-xs uppercase">${name}</span>
+                    <span class="text-indigo-500 font-black h-font">$${price}</span>
+                </div>
+            `;
+            tab('checkout');
+        }
+
+        function confirmOrder() {
+            alert('تم إرسال طلبك للمدير!');
+            tab('home');
+        }
+
+        function clearAll() {
+            if(confirm('سيتم مسح كل المنتجات، هل أنت متأكد؟')) {
+                localStorage.removeItem('stop_db');
+                renderItems();
+            }
+        }
+
+        function renderItems() {
+            const grid = document.getElementById('shop-grid');
+            const items = JSON.parse(localStorage.getItem('stop_db')) || [];
+            if (items.length === 0) {
+                grid.innerHTML = '<p class="text-center text-zinc-700 w-full mt-20 h-font text-[10px]">No Products Found.</p>';
+                return;
+            }
+            grid.innerHTML = items.map(p => `
+                <div class="bg-[#0d0d0d] p-5 rounded-[30px] border border-[#111]">
+                    <img src="${p.img}" class="h-40 mx-auto object-contain mb-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="h-font text-[11px] font-bold uppercase italic">${p.name}</h3>
+                        <span class="text-indigo-500 font-black h-font">$${p.price}</span>
+                    </div>
+                    <button onclick="buy('${p.name}', '${p.price}')" class="w-full h-11 bg-white text-black rounded-xl mt-4 text-[10px] font-black uppercase">BUY NOW</button>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
